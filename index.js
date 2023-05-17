@@ -35,6 +35,7 @@ const typeDefs = gql`
   type Query {
     personCount: Int!
     allPersons: [Person]!
+    findPerson(name: String!): Person
   }
 `;
 
@@ -42,6 +43,12 @@ const resolvers = {
   Query: {
     personCount: () => persons.length,
     allPersons: () => persons,
+    findPerson: (parent, args) => {
+      const { name } = args;
+      return persons.find(
+        (item) => item.name.toLowerCase() === name.toLowerCase()
+      );
+    },
   },
 };
 
