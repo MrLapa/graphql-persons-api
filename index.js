@@ -1,4 +1,5 @@
-const { ApolloServer, gql } = require("apollo-server");
+import { ApolloServer, gql } from "apollo-server";
+import { v4 as uuidv4 } from "uuid";
 
 const persons = [
   {
@@ -41,6 +42,15 @@ const typeDefs = gql`
     allPersons: [Person]!
     findPerson(name: String!): Person
   }
+
+  type Mutation {
+    addPerson(
+      name: String!
+      phone: String!
+      street: String!
+      city: String!
+    ): Person
+  }
 `;
 
 const resolvers = {
@@ -52,6 +62,14 @@ const resolvers = {
       return persons.find(
         (item) => item.name.toLowerCase() === name.toLowerCase()
       );
+    },
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+      const person = { ...args, id: uuidv4() };
+      persons.push(person);
+
+      return person;
     },
   },
   Person: {
